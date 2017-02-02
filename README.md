@@ -1,6 +1,8 @@
 # Flow-sim
 2D Fluid motion simulator
 
+Full playable version in "Flow Sim.rar"
+
 A 2D fluid motion simulator for various simplified flows including:
 
 - Uniform flow
