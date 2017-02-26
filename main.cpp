@@ -1,6 +1,7 @@
 #include "Particles.h"
 #include "VelocityFields.h"
 #include <iostream>
+#include <SFML\Audio.hpp>
 
 
 int main()
@@ -16,6 +17,9 @@ int main()
 	sf::RenderWindow window(sf::VideoMode(800, 600), "Flow Sim");
 	window.setFramerateLimit(60);
 
+	
+	
+	
 	//fonts and textures for words/sprites
 	sf::Font font;
 	font.loadFromFile("Welbut__.ttf");
@@ -24,7 +28,7 @@ int main()
 	sf::Text &radiusText = Texts[1];
 	sf::Text &cylinderRotationText = Texts[3];
 	sf::Text &vortexRotationText = Texts[0];
-
+	
 	
 	for (std::size_t i = 0; i < 15;++i)
 	{
@@ -79,6 +83,8 @@ int main()
 		infoSprites[i].setTexture(infoTextures[i]);
 		infoSprites[i].setPosition(440, 410);
 	}
+
+	
 	
 	//for button press toggles
 	bool infoDraw = 0;// "H"
@@ -105,6 +111,14 @@ int main()
 	radiusCircle.setOutlineThickness(1);
 	radiusCircle.setOutlineColor(sf::Color::Blue);
 	radiusCircle.setFillColor(sf::Color::Transparent);
+	//cylinder overlay for rotational wing
+	sf::Texture cylinderText;
+	cylinderText.loadFromFile("CylinderSprite.png");
+	sf::Sprite cylinderSprite;
+	cylinderSprite.setTexture(cylinderText);
+	cylinderSprite.setOrigin(169, 169);
+	cylinderSprite.setPosition(400, 300);
+	cylinderSprite.setScale(radius/169, radius/169);
 
 	//velocity fields
 	int VfieldNum = 1;
@@ -178,13 +192,31 @@ int main()
 		emitPointsfixed[i].initialise();
 	}
 
-	
-	
+	//Sounds
+	sf::Music wind1;
+	wind1.openFromFile("ambient-loop2.wav");
+	wind1.setLoop(true);
+	wind1.play();
+
+	sf::Music wind2;
+	wind2.openFromFile("ambient-loop1.wav");
+	wind2.setVolume(30);
+	wind2.setLoop(true);
+	bool win2play = 0;
+
+	sf::SoundBuffer buffer;
+	buffer.loadFromFile("2-beep-c.wav");
+	sf::Sound click;
+	click.setBuffer(buffer);
+	click.setVolume(10);
 
 
 	//MAIN WINDOW LOOP
 	while (window.isOpen())
 	{
+
+		
+
 		sf::Event event;
 		while (window.pollEvent(event))
 		{
@@ -194,6 +226,7 @@ int main()
 			//KEYPRESSES
 			if (event.type == sf::Event::KeyPressed)
 			{
+				
 				//For any key pressed, turn off demo mode (if turned on)
 				if (demoOn == 1)
 				{   
@@ -203,6 +236,7 @@ int main()
 				//Turn on Demo mode
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
 				{
+					click.play();
 					if (demoOn == 0)
 					{
 						demoOn = 1;
@@ -215,6 +249,7 @@ int main()
 				//Toggle streamlines
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
 				{
+					click.play();
 					if (streamlinesOnly == 0)
 						streamlinesOnly = 1;
 					else
@@ -223,6 +258,7 @@ int main()
 				//View info screen
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::H))
 				{
+					click.play();
 					if (infoDraw == 0)
 						infoDraw = 1;
 					else
@@ -231,6 +267,7 @@ int main()
 				//View flow info
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::I))
 				{
+					click.play();
 					if (flowinfoDraw == 0)
 						flowinfoDraw = 1;
 					else
@@ -239,6 +276,7 @@ int main()
 				//Streamlines Colour
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::C))
 				{
+					click.play();
 					++streamlinesColourSelecter;
 					if (streamlinesColourSelecter > 6)
 						streamlinesColourSelecter = 0;
@@ -250,6 +288,7 @@ int main()
 				//No flow
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1))
 				{
+					click.play();
 					VfieldNum = 0;
 					mousepointEmitter.setVelocityField(Vfields[0]);
 
@@ -263,6 +302,7 @@ int main()
 				// uniform flow
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num2))
 				{
+					click.play();
 					VfieldNum = 1;
 					mousepointEmitter.setVelocityField(Vfields[1]);
 
@@ -276,6 +316,7 @@ int main()
 				//shear flow
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num3))
 				{
+					click.play();
 					VfieldNum = 2;
 					mousepointEmitter.setVelocityField(Vfields[2]);
 
@@ -289,6 +330,7 @@ int main()
 				//stagnation point flow
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num4))
 				{
+					click.play();
 					VfieldNum = 3;
 					mousepointEmitter.setVelocityField(Vfields[3]);
 
@@ -302,6 +344,7 @@ int main()
 				//Sphere flow
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num5))
 				{
+					click.play();
 					VfieldNum = 4;
 					mousepointEmitter.setVelocityField(Vfields[4]);
 
@@ -315,6 +358,7 @@ int main()
 				//Vortex flow
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num6))
 				{
+					click.play();
 					VfieldNum = 5;
 					mousepointEmitter.setVelocityField(Vfields[5]);
 
@@ -328,6 +372,7 @@ int main()
 				//Bathplug vortex (Rankine vortex)
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num7))
 				{
+					click.play();
 					VfieldNum = 6;
 					mousepointEmitter.setVelocityField(Vfields[6]);
 
@@ -341,6 +386,7 @@ int main()
 				//Lift on rotating cylinder
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num8))
 				{
+					click.play();
 					VfieldNum = 7;
 					mousepointEmitter.setVelocityField(Vfields[7]);
 
@@ -354,6 +400,7 @@ int main()
 				//set defaults (Reset)
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::R))
 				{
+					click.play();
 					if (VfieldNum == 0)//no flow
 						continue;
 					if (VfieldNum == 1 || VfieldNum == 2)//uniform and shear flows
@@ -392,6 +439,7 @@ int main()
 				//Cycle through flows
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 				{
+					click.play();
 					++VfieldNum;
 					if (VfieldNum > 7)
 						VfieldNum = 0;
@@ -450,13 +498,13 @@ int main()
 					else
 						window.close();
 				}
-					
+				
 				
 			}
 		}
 
 
-		//KEYPRESSES WHICH NEED TO ACT INSTANTLY
+		//KEYPRESSES THAT NEED TO ACT INSTANTLY
 
 		//increase Rankine vortex rotation
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right) && VfieldNum == 6 && rankinevortexrotation < 50)
@@ -497,6 +545,24 @@ int main()
 		cylinderRotationText.setString("Cylinder rotation: " + std::to_string((int)cylinderrotation / 1000));
 		vortexRotationText.setString("Vorticity: " + std::to_string((int)rankinevortexrotation));
 		radiusText.setString("Radius: " + std::to_string((int)radius));
+		//volume and play toggle for 'wind' sounds
+		wind1.setVolume(float(1.0/1600) *flowStrength*flowStrength);
+		wind1.setPitch(1 + 4*(float(1.0 / 1600) *flowStrength*flowStrength)/100);
+		wind2.setVolume(float((1.0 / 900))*cylinderrotation*cylinderrotation / 1000000);
+		wind2.setPitch(1 + 1.1 * (float((1.0 / 900))*cylinderrotation*cylinderrotation / 1000000) / 100);
+		if (VfieldNum == 7 && win2play == 0)
+		{
+			wind2.play();
+			win2play = 1;
+		}
+		else if (VfieldNum != 7)
+		{
+			wind2.pause();
+			win2play = 0;
+		}
+		//cylinder wing sprite
+		cylinderSprite.setScale(radius / 169, radius / 169);
+		cylinderSprite.rotate(cylinderrotation/20000);
 
 		//set "mouse point emitter" to follow mouse co-rds
 		sf::Vector2i mouse = sf::Mouse::getPosition(window);
@@ -629,6 +695,9 @@ int main()
 		{
 			window.draw(radiusCircle);
 		}
+		//draw cylinder sprite
+		if (VfieldNum == 7)
+			window.draw(cylinderSprite);
 		//draw relevant text for each velocity flow
 		if (VfieldNum != 0 && demoOn == 0)
 		{
@@ -695,7 +764,7 @@ int main()
 		
 		window.display();
 
-		// DEMO MODE LOOOP
+	
 
 		
 
